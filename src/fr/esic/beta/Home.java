@@ -9,10 +9,16 @@ package fr.esic.beta;
 import fr.esic.model.Propreties;
 import fr.esic.connected.Requete;
 import fr.esic.model.User;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 import javax.swing.text.html.HTMLEditorKit;
 
 
@@ -25,12 +31,13 @@ public class Home extends javax.swing.JFrame {
     /**
      * Creates new form Home
      */
+    int k=1;
     public Home() {
         initComponents();
        jTabbedPane3.setEnabledAt(2, false);
         jldatenom.setText("Dernier Connexion : "+Propreties.USER_CONNECT.getDate());
         jlobjective.setText("Objective Hebdomadaire : "+Propreties.USER_CONNECT.getContenu());
-        jljournalier.setText("Objective Journalier : "+Propreties.USER_CONNECT.getJournalier());
+        jljournalier.setText("Objective Journalier : "+Propreties.USER_CONNECT.getType()+" "+Propreties.USER_CONNECT.getJournalier()+" "+Propreties.USER_CONNECT.getTemps());
          jlmail.setText("Votre Mail : "+Propreties.USER_CONNECT.getMail());
         jlnom.setText("Votre nom :"+Propreties.USER_CONNECT.getNom());
         jlprenom.setText("Votre Prenom : "+Propreties.USER_CONNECT.getPrenom());
@@ -39,7 +46,8 @@ public class Home extends javax.swing.JFrame {
         jlpoid.setText("Votre Poids : "+Propreties.USER_CONNECT.getPoids());
         jltaille.setText("Votre Taille : "+Propreties.USER_CONNECT.getTaille());
         jlage.setText("Votre Age : "+Propreties.USER_CONNECT.getAge());
-        
+        objecpoids.setText("Votre Objective : "+Propreties.USER_CONNECT.getObjectpoids()+" KG");
+        setLocationRelativeTo(this);
         
       
 
@@ -56,7 +64,6 @@ public class Home extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenu1 = new javax.swing.JMenu();
         jTabbedPane3 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
@@ -65,16 +72,20 @@ public class Home extends javax.swing.JFrame {
         btndeconnexion = new javax.swing.JButton();
         jljournalier = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
+        objecpoids = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtobjective = new javax.swing.JTextArea();
         btnajoute = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtjournalier = new javax.swing.JTextArea();
         btnjournalier = new javax.swing.JButton();
+        jctemps = new javax.swing.JComboBox<>();
+        jctype = new javax.swing.JComboBox<>();
+        txttemp = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtobjective = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -107,8 +118,6 @@ public class Home extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         txthelp = new javax.swing.JTextArea();
 
-        jMenu1.setText("jMenu1");
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
@@ -140,6 +149,12 @@ public class Home extends javax.swing.JFrame {
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/Logo_objective-01-1.png"))); // NOI18N
 
+        objecpoids.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        objecpoids.setForeground(new java.awt.Color(0, 102, 204));
+
+        jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel13.setForeground(new java.awt.Color(255, 0, 0));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -147,32 +162,41 @@ public class Home extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(35, 35, 35)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jljournalier, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
-                            .addComponent(jlobjective, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jldatenom, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(btndeconnexion))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(48, 48, 48)
-                        .addComponent(jLabel12)))
-                .addContainerGap(67, Short.MAX_VALUE))
+                        .addComponent(jLabel12))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(35, 35, 35)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(objecpoids, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jljournalier, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+                                .addComponent(jlobjective, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jldatenom, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                .addContainerGap(79, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(btndeconnexion)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(16, 16, 16))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jldatenom, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlobjective, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jljournalier, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(objecpoids, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel12)
                 .addGap(18, 18, 18)
-                .addComponent(btndeconnexion, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btndeconnexion, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
                 .addGap(19, 19, 19))
         );
 
@@ -182,10 +206,6 @@ public class Home extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Objective Hebdomadaire ");
-
-        txtobjective.setColumns(20);
-        txtobjective.setRows(5);
-        jScrollPane1.setViewportView(txtobjective);
 
         btnajoute.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnajoute.setText("AJOUTE");
@@ -205,10 +225,6 @@ public class Home extends javax.swing.JFrame {
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setText("Objective Journalier ");
 
-        txtjournalier.setColumns(20);
-        txtjournalier.setRows(5);
-        jScrollPane2.setViewportView(txtjournalier);
-
         btnjournalier.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnjournalier.setText("AJOUTE");
         btnjournalier.addActionListener(new java.awt.event.ActionListener() {
@@ -217,33 +233,63 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
+        jctemps.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Minute", "Heure", "Poids" }));
+        jctemps.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jctempsActionPerformed(evt);
+            }
+        });
+
+        jctype.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Marche", "Sprinte" }));
+
+        txtobjective.setColumns(20);
+        txtobjective.setRows(5);
+        jScrollPane1.setViewportView(txtobjective);
+
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jButton1.setText("START");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(114, 114, 114)
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(57, 57, 57)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(47, Short.MAX_VALUE))
+                .addGap(114, 114, 114)
+                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(28, 28, 28)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(106, 106, 106))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnjournalier, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnajoute, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(19, 19, 19))))
+                            .addComponent(btnajoute, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnjournalier, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(19, 19, 19))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(106, 106, 106))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(71, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(66, 66, 66))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(jctype, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txttemp, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jctemps, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(51, 51, 51))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -251,17 +297,22 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(19, 19, 19)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(btnajoute, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(8, 8, 8)
                 .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnjournalier, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addGap(38, 38, 38)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jctemps, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jctype, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txttemp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(68, 68, 68)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnjournalier, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -269,8 +320,8 @@ public class Home extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -376,7 +427,7 @@ public class Home extends javax.swing.JFrame {
                     .addComponent(jLabel4))
                 .addGap(42, 42, 42)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtnom, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(txtnom, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
                     .addComponent(txtprenom)
                     .addComponent(txtsexe)
                     .addComponent(txtmdp)
@@ -535,7 +586,7 @@ public class Home extends javax.swing.JFrame {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addGap(43, 43, 43)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 658, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addContainerGap(98, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -599,23 +650,35 @@ public class Home extends javax.swing.JFrame {
 "-vous aider à progresser pour atteindre vos objectifs\n" +
 "-vous donne un aperçu de vos informations, que vous pouvez modifier\n" +
 "merci d'utiliser notre application, bon courage");
-            txthelp.setEditable(false);
             
             String nom = Propreties.USER_CONNECT.getNom();
             String prenom = Propreties.USER_CONNECT.getPrenom();
             String sexe = Propreties.USER_CONNECT.getSexe();
-            String journalier = Propreties.USER_CONNECT.getJournalier();
+            int journalier = Propreties.USER_CONNECT.getJournalier();
             String contenu = Propreties.USER_CONNECT.getContenu();
             String poids = Propreties.USER_CONNECT.getPoids();
             String taille = Propreties.USER_CONNECT.getTaille();
+            String objepoid = Propreties.USER_CONNECT.getObjectpoids();
             Date date1 = Propreties.USER_CONNECT.getDate();
+            
+             if (objepoid == null) {
+                 objecpoids.setVisible(false);
+             
+         }else{
+                 objecpoids.setVisible(true);
+             }
+        
             if (contenu == null) {
                jlobjective.setVisible(false);
                 
+            }else {
+                jlobjective.setVisible(true);
             }
-            if (journalier == null) {
+            if (journalier == 0) {
                jljournalier.setVisible(false);
                 
+            }else{
+                 jljournalier.setVisible(true);
             }
             
             
@@ -645,17 +708,6 @@ public class Home extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowOpened
 
-    private void btnajouteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnajouteActionPerformed
-        String contenu = txtobjective.getText();
-        String log = Propreties.USER_CONNECT.getMail();
-        try {
-            Requete.insertObjective(contenu, log);
-            JOptionPane.showMessageDialog(rootPane, "Votre Objective a été enregistré");
-        } catch (Exception e) {
-             JOptionPane.showMessageDialog(rootPane, "exception"+e.getMessage());
-        }
-    }//GEN-LAST:event_btnajouteActionPerformed
-
     private void btneditsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btneditsActionPerformed
        String Bdnom = Propreties.USER_CONNECT.getNom();
        String Bdprenom = Propreties.USER_CONNECT.getPrenom();
@@ -676,57 +728,103 @@ public class Home extends javax.swing.JFrame {
                     if (nom.isEmpty() && prenom.isEmpty() && sexe.isEmpty() && mdp.isEmpty() && poids.isEmpty() && taille.isEmpty() ) {
             Requete.updateProfile(Bdnom, Bdprenom, Bdsexe, Bdmdp, Bdpoids, Bdtaille, age, log);
             JOptionPane.showMessageDialog(rootPane, "votre age a été modifié");
+            jlage.setText("Votre Age : "+txtage.getText());
         }else if (nom.isEmpty() && prenom.isEmpty() && sexe.isEmpty() && mdp.isEmpty() && poids.isEmpty() && age.isEmpty() ) {
             Requete.updateProfile(Bdnom, Bdprenom, Bdsexe, Bdmdp, Bdpoids, taille, Bdage, log);
             JOptionPane.showMessageDialog(rootPane, "votre taille a été modifié");
+            jltaille.setText("Votre Taille : "+txttaille.getText());
         }else if (nom.isEmpty() && prenom.isEmpty() && sexe.isEmpty() && mdp.isEmpty() && taille.isEmpty() && age.isEmpty() ) {
             Requete.updateProfile(Bdnom, Bdprenom, Bdsexe, Bdmdp, poids, Bdtaille, Bdage, log);
             JOptionPane.showMessageDialog(rootPane, "votre poids a été modifié");
+            jlpoid.setText("Votre Poids : "+txtpoids.getText());
         }else if (nom.isEmpty() && prenom.isEmpty() && sexe.isEmpty() && poids.isEmpty() && taille.isEmpty() && age.isEmpty() ) {
             Requete.updateProfile(Bdnom, Bdprenom, Bdsexe, mdp, Bdpoids, Bdtaille, Bdage, log);
             JOptionPane.showMessageDialog(rootPane, "votre password a été modifié");
+                    jlmdp.setText("Votre Password :" +txtmdp.getText());
         }else if (nom.isEmpty() && prenom.isEmpty() && mdp.isEmpty() && poids.isEmpty() && taille.isEmpty() && age.isEmpty() ) {
             Requete.updateProfile(Bdnom, Bdprenom, sexe, Bdmdp, Bdpoids, Bdtaille, Bdage, log);
             JOptionPane.showMessageDialog(rootPane, "votre sexe a été modifié");
+                    jlsexe.setText("Votre Sexe :"+txtsexe.getText());
         }else if (nom.isEmpty() && sexe.isEmpty() && mdp.isEmpty() && poids.isEmpty() && taille.isEmpty() && age.isEmpty() ) {
             Requete.updateProfile(Bdnom, prenom, Bdsexe, Bdmdp, Bdpoids, Bdtaille, Bdage, log);
             JOptionPane.showMessageDialog(rootPane, "votre prenom a été modifié");
+                    jlprenom.setText("Votre Prenom : "+txtprenom.getText());
         }else if (prenom.isEmpty() && sexe.isEmpty() && mdp.isEmpty() && poids.isEmpty() && taille.isEmpty() && age.isEmpty() ) {
             Requete.updateProfile(nom, Bdprenom, Bdsexe, Bdmdp, Bdpoids, Bdtaille, Bdage, log);
-            JOptionPane.showMessageDialog(rootPane, "votre profile a été modifié");
+            JOptionPane.showMessageDialog(rootPane, "votre nom a été modifié");
+                   jlnom.setText("Votre nom est :"+txtnom.getText());
         }else if ( sexe.isEmpty() && mdp.isEmpty() && poids.isEmpty() && taille.isEmpty() && age.isEmpty() ) {
             Requete.updateProfile(nom, prenom, Bdsexe, Bdmdp, Bdpoids, Bdtaille, Bdage, log);
             JOptionPane.showMessageDialog(rootPane, "votre profile a été modifié");
+            jlnom.setText("Votre nom est :"+txtnom.getText());
+            jlprenom.setText("Votre Prenom : "+txtprenom.getText());
         }else if ( nom.isEmpty() && prenom.isEmpty() && poids.isEmpty() && taille.isEmpty() && age.isEmpty() ) {
             Requete.updateProfile(Bdnom, Bdprenom, sexe, mdp, Bdpoids, Bdtaille, Bdage, log);
             JOptionPane.showMessageDialog(rootPane, "votre profile a été modifié");
+            jlsexe.setText("Votre Sexe :"+txtsexe.getText());
+             jlmdp.setText("Votre Password :" +txtmdp.getText());
         }else if ( nom.isEmpty() && prenom.isEmpty() && sexe.isEmpty() && mdp.isEmpty() && age.isEmpty() ) {
             Requete.updateProfile(Bdnom, Bdprenom, Bdsexe, Bdmdp, poids, taille, Bdage, log);
             JOptionPane.showMessageDialog(rootPane, "votre profile a été modifié");
+            jlpoid.setText("Votre Poids : "+txtpoids.getText());
+            jltaille.setText("Votre Taille : "+txttaille.getText());
         }else if ( nom.isEmpty() && prenom.isEmpty() && sexe.isEmpty() && mdp.isEmpty() && poids.isEmpty() ) {
             Requete.updateProfile(Bdnom, Bdprenom, Bdsexe, Bdmdp, Bdpoids, taille, age, log);
             JOptionPane.showMessageDialog(rootPane, "votre profile a été modifié");
+            jltaille.setText("Votre Taille : "+txttaille.getText());
+            jlage.setText("Votre Age : "+txtage.getText());
         }else if ( nom.isEmpty() && prenom.isEmpty() && sexe.isEmpty()  ) {
             Requete.updateProfile(Bdnom, Bdprenom, Bdsexe, mdp, poids, taille, age, log);
             JOptionPane.showMessageDialog(rootPane, "votre profile a été modifié");
+            jlmdp.setText("Votre Password :" +txtmdp.getText());
+            jlpoid.setText("Votre Poids : "+txtpoids.getText());
+            jltaille.setText("Votre Taille : "+txttaille.getText());
+            jlage.setText("Votre Age : "+txtage.getText());
         }else if ( nom.isEmpty() && prenom.isEmpty() && mdp.isEmpty()  ) {
             Requete.updateProfile(Bdnom, Bdprenom, sexe, Bdmdp, poids, taille, age, log);
             JOptionPane.showMessageDialog(rootPane, "votre profile a été modifié");
+             jlsexe.setText("Votre Sexe :"+txtsexe.getText());
+              jltaille.setText("Votre Taille : "+txttaille.getText());
+              jlpoid.setText("Votre Poids : "+txtpoids.getText());
+              jlage.setText("Votre Age : "+txtage.getText());
          }else if ( mdp.isEmpty() && poids.isEmpty() && taille.isEmpty() && age.isEmpty() ) {
             Requete.updateProfile(nom, prenom, sexe, Bdmdp, Bdpoids, Bdtaille, Bdage, log);
             JOptionPane.showMessageDialog(rootPane, "votre profile a été modifié");
+             jlnom.setText("Votre nom est :"+txtnom.getText());
+            jlprenom.setText("Votre Prenom : "+txtprenom.getText());
+            jlsexe.setText("Votre Sexe :"+txtsexe.getText());
          }else if ( nom.isEmpty() && prenom.isEmpty() && taille.isEmpty() && age.isEmpty() ) {
             Requete.updateProfile(Bdnom, Bdprenom, sexe, mdp, poids, Bdtaille, Bdage, log);
             JOptionPane.showMessageDialog(rootPane, "votre profile a été modifié");
+            jlpoid.setText("Votre Poids : "+txtpoids.getText());
+            jlsexe.setText("Votre Sexe :"+txtsexe.getText());
+            jlmdp.setText("Votre Password :" +txtmdp.getText());
           }else if ( nom.isEmpty() && prenom.isEmpty() ) {
             Requete.updateProfile(Bdnom, Bdprenom, sexe, mdp, poids, taille, age, log);
             JOptionPane.showMessageDialog(rootPane, "votre profile a été modifié");
+           jlpoid.setText("Votre Poids : "+txtpoids.getText());
+            jltaille.setText("Votre Taille : "+txttaille.getText());
+            jlsexe.setText("Votre Sexe :"+txtsexe.getText());
+            jlmdp.setText("Votre Password :" +txtmdp.getText());
+            jlage.setText("Votre Age : "+txtage.getText());
            }else if ( sexe.isEmpty() && mdp.isEmpty() ) {
             Requete.updateProfile(nom, prenom, Bdsexe, Bdmdp, poids, taille, age, log);
             JOptionPane.showMessageDialog(rootPane, "votre profile a été modifié");
+            jlnom.setText("Votre nom est :"+txtnom.getText());
+            jlprenom.setText("Votre Prenom : "+txtprenom.getText());
+            jlpoid.setText("Votre Poids : "+txtpoids.getText());
+             jltaille.setText("Votre Taille : "+txttaille.getText());
+             jlage.setText("Votre Age : "+txtage.getText());
             }else {
             Requete.updateProfile(nom, prenom, sexe, mdp, poids, taille, age, log);
             JOptionPane.showMessageDialog(rootPane, "votre profile a été modifié");
+             jlnom.setText("Votre nom est :"+txtnom.getText());
+            jlprenom.setText("Votre Prenom : "+txtprenom.getText());
+            jlsexe.setText("Votre Sexe :"+txtsexe.getText());
+            jlmdp.setText("Votre Password :" +txtmdp.getText());
+            jlpoid.setText("Votre Poids : "+txtpoids.getText());
+            jltaille.setText("Votre Taille : "+txttaille.getText());
+            jlage.setText("Votre Age : "+txtage.getText());
       }
         } catch (Exception e) {
              JOptionPane.showMessageDialog(rootPane, "exception"+e.getMessage());
@@ -743,15 +841,95 @@ public class Home extends javax.swing.JFrame {
 
     private void btnjournalierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnjournalierActionPerformed
         // TODO add your handling code here:
-        String journalier = txtjournalier.getText();
+        Object type = jctype.getSelectedItem();
+        int journalier =Integer.parseInt(txttemp.getText());
+        Object temp = jctemps.getSelectedItem();
         String log = Propreties.USER_CONNECT.getMail();
-        
+        String objecpoid = txttemp.getText();
         try {
-            Requete.insertJournalier(journalier, log);
-            JOptionPane.showMessageDialog(rootPane, "Votre Objective journalier a été enregistré");
+            if (jctemps.getSelectedItem().equals("Poids")) {
+                Requete.UpdatePoids(objecpoid, log);
+                objecpoids.setText("Votre Objective : "+objecpoid+" KG");
+          JOptionPane.showMessageDialog(rootPane, "Votre Nouvaux Objective a été enregistré");
+                
+            }else{
+                Requete.insertJournalier(journalier, type, temp, log);
+                jljournalier.setText("Objective Journalier : "+type+" "+journalier+" "+temp);
+                JOptionPane.showMessageDialog(rootPane, "Votre Objective journalier a été enregistré");
+            }
+            
         } catch (Exception e) {
         }
     }//GEN-LAST:event_btnjournalierActionPerformed
+
+    private void btnajouteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnajouteActionPerformed
+        String contenu = txtobjective.getText();
+        String log = Propreties.USER_CONNECT.getMail();
+        try {
+            Requete.insertObjective(contenu, log);
+            JOptionPane.showMessageDialog(rootPane, "Votre Objective a été enregistré");
+            jlobjective.setText("Objective Hebdomadaire : "+txtobjective.getText());
+            jldatenom.setVisible(false);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, "exception"+e.getMessage());
+        }
+    }//GEN-LAST:event_btnajouteActionPerformed
+
+Timer t;
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+
+         t= new Timer(1000, new ActionListener() {
+           
+            public void actionPerformed(ActionEvent e) {      
+              
+               jLabel13.setText(String.valueOf(k));
+               try {
+              int a = Propreties.USER_CONNECT.getJournalier();
+               k++;
+            Propreties.USER_CONNECT.getJournalier();
+                     
+                         if (k == a*60) {
+            
+     
+              t.stop();
+              a=0;
+              jLabel13.setText(String.valueOf(a));
+               jljournalier.setVisible(false);
+               jLabel13.setVisible(false);
+               
+              JOptionPane.showMessageDialog(rootPane, "Vous avez fini");
+                          
+                  
+                        String log = Propreties.USER_CONNECT.getMail();
+                       Requete.DeleteBd(log);
+                   
+                            
+
+        }
+                         } catch (SQLException ex) {
+                       Logger.getLogger(Home.class.getName()).log(Level.SEVERE, null, ex);
+                   }
+
+            }
+        });
+          t.start();
+
+    
+   
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jctempsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jctempsActionPerformed
+        // TODO add your handling code here:
+        if (jctemps.getSelectedItem().equals("Poids")) {
+            jctype.setVisible(false);
+
+            
+        }else{
+            jctype.setVisible(true);
+
+        }
+    }//GEN-LAST:event_jctempsActionPerformed
 
     /**
      * @param args the command line arguments
@@ -793,10 +971,12 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JButton btndeconnexion;
     private javax.swing.JButton btnedits;
     private javax.swing.JButton btnjournalier;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -805,7 +985,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -814,9 +993,10 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane3;
+    private javax.swing.JComboBox<String> jctemps;
+    private javax.swing.JComboBox<String> jctype;
     private javax.swing.JLabel jlage;
     private javax.swing.JLabel jldatenom;
     private javax.swing.JLabel jljournalier;
@@ -829,9 +1009,9 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JLabel jlsexe;
     private javax.swing.JLabel jltaille;
     private javax.swing.JPanel jphelp;
+    private javax.swing.JLabel objecpoids;
     private javax.swing.JTextField txtage;
     private javax.swing.JTextArea txthelp;
-    private javax.swing.JTextArea txtjournalier;
     private javax.swing.JTextField txtmdp;
     private javax.swing.JTextField txtnom;
     private javax.swing.JTextArea txtobjective;
@@ -839,5 +1019,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JTextField txtprenom;
     private javax.swing.JTextField txtsexe;
     private javax.swing.JTextField txttaille;
+    private javax.swing.JTextField txttemp;
     // End of variables declaration//GEN-END:variables
 }

@@ -23,7 +23,10 @@ public class User {
     private Date date;
     private String age;
     private String contenu;
-    private String journalier;
+    private int journalier;
+    private String type;
+    private String temps;
+    private String objectpoids;
     
     public User(){
         
@@ -129,13 +132,39 @@ public class User {
         this.age = age;
     }
 
-    public String getJournalier() {
+    public int getJournalier() {
         return journalier;
     }
 
-    public void setJournalier(String journalier) {
+    public void setJournalier(int journalier) {
         this.journalier = journalier;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getTemps() {
+        return temps;
+    }
+
+    public void setTemps(String temps) {
+        this.temps = temps;
+    }
+
+    public String getObjectpoids() {
+        return objectpoids;
+    }
+
+    public void setObjectpoids(String objectpoids) {
+        this.objectpoids = objectpoids;
+    }
+    
+    
 
 
 

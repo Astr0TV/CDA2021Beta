@@ -43,7 +43,10 @@ public class Requete {
             u.setAge(rs.getString("age"));
             u.setDate(rs.getDate("dated1"));
             u.setContenu(rs.getString("contenu"));
-            u.setJournalier(rs.getString("journalier"));
+            u.setJournalier(rs.getInt("journalier"));
+            u.setType(rs.getString("type"));
+            u.setTemps(rs.getString("temp"));
+            u.setObjectpoids(rs.getString("objectpoids"));
         }
         
         return u;
@@ -101,14 +104,32 @@ public class Requete {
          prepare.execute();
             }
         
-                public static void insertJournalier(String journalier,String log) throws SQLException {
-                 String  sql = "update person set journalier=? where mail=?";
+                public static void insertJournalier(int journalier,Object type, Object temp,String log) throws SQLException {
+                 String  sql = "update person set journalier=?, type=?, temp=? where mail=?";
          Connection connexion = Bd.getConnection();
          PreparedStatement prepare = connexion.prepareStatement(sql);
-         prepare.setString(1, journalier);
-         prepare.setString(2, log);
+         prepare.setInt(1, journalier);
+         prepare.setObject(2, type);
+         prepare.setObject(3, temp);
+         prepare.setString(4, log);
          prepare.execute();
             }
-      
+                
+       public static void UpdatePoids(String objectpoids,String log) throws SQLException{
+           String sql ="Update person set objectpoids=? where mail=?";
+           Connection connexion = Bd.getConnection();
+           PreparedStatement prepare = connexion.prepareStatement(sql);
+           prepare.setString(1, objectpoids);
+           prepare.setString(2, log);
+           prepare.execute();
+       }
+       
+       public static void DeleteBd(String log) throws SQLException{
+              String sql ="Update person set journalier=0 where mail=?";
+           Connection connexion = Bd.getConnection();
+           PreparedStatement prepare = connexion.prepareStatement(sql);
+           prepare.setString(1, log);
+           prepare.execute();
+       }
     
 }
